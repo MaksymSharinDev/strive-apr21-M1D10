@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <!--
         QUIZ GAME!
 
@@ -41,11 +44,12 @@
   }
 
   body {
-    margin-top: 150px;
+    margin-top: 10%;
     background-color: royalblue;
   }
 
   .row {
+    
     display: grid;
     justify-content: center;
     text-align: center;
@@ -64,7 +68,7 @@
   }
 
   button {
-    min-width: 400px;
+    width: 100%;
     min-height: 100px;
     padding: 0.5em 3em;
     border: 0.16em solid #FFFFFF;
@@ -78,6 +82,14 @@
     text-align: center;
     transition: all 0.15s;
     background-color: royalblue;
+
+    flex-basis: 100%;
+  }
+  #answersWrapper{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    min-width: 250px;
   }
 
   button:hover {
@@ -92,7 +104,6 @@
 
   @media all and (max-width:30em) {
     button {
-      display: block;
       margin: 0.4em auto;
     }
   }
@@ -122,18 +133,17 @@
   <div id="answers" class="row">
 
     <div id="answersWrapper">
-      <div class="row">
+
         <button class="multipleOption" hidden=true> </button>
         <button class="multipleOption" hidden=true> </button>
-      </div>
-      <div class="row">
+
         <button class="multipleOption" hidden=true> </button>
         <button class="multipleOption" hidden=true> </button>
-      </div>
-      <div class="row">
+
+
         <button class="booleanOption" hidden=true> </button>
         <button class="booleanOption" hidden=true> </button>
-      </div>
+
     </div>
 
   </div>
@@ -300,27 +310,28 @@
       //Components Logic
 
       const answerNext = () => {
-        if (state.answers.length === questions.length) return null
+        if (state.answers.length > questions.length) return null
         $('#settings>p').innerText = "Score: " + state.score
         let nQ = state.answers.length + 1
-        loadQuestion(nQ)
-        answerInputActivation(nQ)
+        try{
+          loadQuestion(nQ)
+          answerInputActivation(nQ)
+        }catch(e){
+          $('#settings>p').innerText = ''
+          let H1Node = $("#question>h1")
+          H1Node.innerText = "FINISH!"
+          let pNode = $('#question>p')
+          pNode.innerText = "your score is " +  state.score
+        } 
+        
 
       }
-
       const loadQuestion = (qstN) => {
         let H1Node = $("#question>h1")
         H1Node.innerText = questions[qstN - 1].category
         let pNode = $('#question>p')
         pNode.innerText = '\n' + unescapeHtml( questions[qstN - 1] .question )
       }
-
-
-
-
-
-      //activate buttons with question num returning an objs with refs, 
-      //deactivate buttons with flag false
       const answerInputActivation = function (qstN) {
         if (qstN !== false) {
           qstN-- //for make human indexing -->array indexing 
@@ -337,8 +348,6 @@
           ]
 
           answerArray = shuffle(answerArray)
-
-
           let btnArray
           switch (questions[qstN].type) {
             case 'multiple':
@@ -352,7 +361,6 @@
             (el, i) => {
               answerArray[i].ref = el
               el.innerText = answerArray[i].text
-              //there was the case of closure for avoid code duplication
 
               if (answerArray[i].correct) {
                 el.addEventListener('click',
@@ -388,10 +396,6 @@
             })
         }
       }
-      const getParameters = function () {
-
-      }
-
       const loadDoc = function (amount, difficulty) {
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -414,7 +418,6 @@
         //answerNext()
       })
     };
-
 
       //HOW TO calculate the result
       //You can do it in 2 ways:
