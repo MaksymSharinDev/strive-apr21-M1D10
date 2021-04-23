@@ -102,13 +102,15 @@
 
 <body>
   <div id="settings" class="row">
+    <button id="start">Start</button>
     <p>Score:</p>
     <div class="quantity">
       <input disabled name="answerQuantity" id="answerQuantity"
-      type="number" min="1" max="9" step="1" value="1">
+      type="number" min="1" max="9" step="1" value="10">
       <select disabled name="difficulty" id="difficulty">
         <option value="easy">easy</option>
       </select>
+      
     </div>
   </div>
   <div id="question" class="row">
@@ -380,20 +382,23 @@
 
       }
 
-      const loadDoc = function() {
+      const loadDoc = function( amount , difficulty ) {
         let xhttp = new XMLHttpRequest();
-
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("demo").innerHTML = this.responseText;
+            questions = JSON.parse( this.responseText ).results 
+            setTimeout( () => answerNext() , 1500 )
           }
         };
-        xhttp.open("GET", `https://opentdb.com/api.php?amount=${state.amount}&category=18&difficulty=${state.difficulty}` , true);
+        xhttp.open("GET", `https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}` , true);
         xhttp.send();
       }
       
       //MAIN
-      answerNext()
+      $('#start').addEventListener('click',function(){
+        loadDoc( $('#answerQuantity').value , $('#difficulty').value  )
+        //answerNext()
+      })
     };
 
 
