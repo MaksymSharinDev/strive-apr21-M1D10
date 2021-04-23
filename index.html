@@ -105,14 +105,13 @@
     <button id="start">Start</button>
     <p>Score:</p>
     <div class="quantity">
-      <input  name="answerQuantity" id="answerQuantity"
-      type="number" min="1" max="15" step="1" value="10">
+      <input name="answerQuantity" id="answerQuantity" type="number" min="1" max="15" step="1" value="10">
       <select name="difficulty" id="difficulty">
         <option value="easy">easy</option>
         <option value="medium">medium</option>
         <option value="hard">hard</option>
       </select>
-      
+
     </div>
   </div>
   <div id="question" class="row">
@@ -249,6 +248,15 @@
       //when the user select the answer, pick the next question and remove this from the page after added in a varible the users' choice.
 
       //HELPER FUNCTIONS
+      function unescapeHtml(unsafe) {
+        return unsafe
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&quot;/g, "\"")
+          .replace(/&#039;/g, "'");
+      }
+
       const $ = function (cssQuery, arrFlag) {
         a = document.querySelectorAll(cssQuery)
         if (!!arrFlag) return a
@@ -281,8 +289,8 @@
 
       //General Variables
       let state = {
-        amount : 10,
-        difficulty : "easy",
+        amount: 10,
+        difficulty: "easy",
         answers: [],
         score: 0,
         maxScore: questions.length
@@ -304,7 +312,7 @@
         let H1Node = $("#question>h1")
         H1Node.innerText = questions[qstN - 1].category
         let pNode = $('#question>p')
-        pNode.innerText = '\n' + questions[qstN - 1].question
+        pNode.innerText = '\n' + unescapeHtml( questions[qstN - 1] .question )
       }
 
 
@@ -380,25 +388,25 @@
             })
         }
       }
-      const getParameters = function (){
+      const getParameters = function () {
 
       }
 
-      const loadDoc = function( amount , difficulty ) {
+      const loadDoc = function (amount, difficulty) {
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            questions = JSON.parse( this.responseText ).results 
-            setTimeout( () => answerNext() , 1500 )
+            questions = JSON.parse( this.responseText ).results
+            setTimeout(() => answerNext(), 1500)
           }
         };
-        xhttp.open("GET", `https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}` , true);
+        xhttp.open("GET", `https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}`, true);
         xhttp.send();
       }
-      
+
       //MAIN
-      $('#start').addEventListener('click',function(){
-        loadDoc( $('#answerQuantity').value , $('#difficulty').value  )
+      $('#start').addEventListener('click', function () {
+        loadDoc($('#answerQuantity').value, $('#difficulty').value)
         //answerNext()
       })
     };
