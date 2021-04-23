@@ -30,23 +30,26 @@
 
     -->
 <style>
+  
+  @font-face {
+      font-family: "Hacked";
+      src: url(https://hackedfont.com/HACKED.ttf);
+    }
+
   * {
+    font-family: Hacked;
     margin: 5px;
   }
 
   body {
-    margin-top: 250px;
+    margin-top: 150px;
     background-color: royalblue;
   }
 
   .row {
     display: grid;
-    grid-column: 50px, auto, auto, 50px;
     justify-content: center;
-  }
-
-  #answers {
-    grid-template-columns: 60px auto 60px;
+    text-align: center;
   }
 
   #question {
@@ -94,22 +97,27 @@
       margin: 0.4em auto;
     }
   }
+
+  
 </style>
 
 <head></head>
 
 <body>
   <div id="settings" class="row">
-
+    <p>Score:</p>
+    <div class="quantity">
+      <input type="number" min="1" max="9" step="1" value="1">
+      <input type="number" min="1" max="9" step="1" value="1">
+    </div>
   </div>
   <div id="question" class="row">
     <h1></h1>
-
     <p></p>
   </div>
 
   <div id="answers" class="row">
-    <div id="lControl"></div>
+
     <div id="answersWrapper">
       <div class="row">
         <button class="multipleOption" hidden=true> </button>
@@ -124,7 +132,7 @@
         <button class="booleanOption" hidden=true> </button>
       </div>
     </div>
-    <div id="rControl"></div>
+
   </div>
   <script>
     var questions = [
@@ -269,19 +277,23 @@
 
       //General Variables
       let state = {
-        answers: []
+        answers: [],
+        score: 0,
+        maxScore: questions.length
       }
 
 
       //Components Logic
-      
-      
-      const answerNext = () =>{
-      let nQ =  state.answers.length + 1 
-      loadQuestion(nQ)
-      answerInputActivation(nQ)
-      } 
-      
+
+      const answerNext = () => {
+        if ( state.answers.length === questions.length) return null
+        $('#settings>p').innerText = "Score: " + state.score
+        let nQ = state.answers.length + 1
+        loadQuestion(nQ)
+        answerInputActivation(nQ)
+        
+      }
+
       const loadQuestion = (qstN) => {
         let H1Node = $("#question>h1")
         H1Node.innerText = questions[qstN - 1].category
@@ -332,20 +344,21 @@
                 el.addEventListener('click',
                   (e) => {
                     e.target.classList.add('correct-answer')
-                    answerArray[i].guess = true
                     state.answers.push(answerArray[i])
-                    setTimeout(() =>  answerInputActivation(false), 1000)
-                    setTimeout(() =>  answerNext(), 2000)
+                    state.score = state.score +1 
+                    setTimeout(() => answerInputActivation(false), 1000)
+                    setTimeout(() => answerNext(), 2000)
+
                   })
               }
               else {
                 el.addEventListener('click',
                   (e) => {
                     e.target.classList.add('incorrect-answer')
-                    answerArray[i].guess = false
                     state.answers.push(answerArray[i])
+                    state.score = state.score 
                     setTimeout(() => answerInputActivation(false), 1000)
-                    setTimeout(() =>  answerNext(), 2000)
+                    setTimeout(() => answerNext(), 2000)
                   })
               }
               el.removeAttribute('hidden')
@@ -356,7 +369,7 @@
             .forEach(el => {
               el.classList.remove('correct-answer')
               el.classList.remove('incorrect-answer')
-              el.setAttribute('hidden',true)
+              el.setAttribute('hidden', true)
               clearEventListener(el)
             })
         }
@@ -364,8 +377,6 @@
 
       //MAIN
       answerNext()
-      
-
     };
 
 
