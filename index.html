@@ -406,7 +406,11 @@
 
       //MAIN
       $('#start').addEventListener('click', function () {
+        $('#start').hidden = true
+        $('#answerQuantity').hidden = true;
+        $('#difficulty').hidden = true;
         loadDoc($('#answerQuantity').value, $('#difficulty').value)
+        
         //answerNext()
       })
     };
