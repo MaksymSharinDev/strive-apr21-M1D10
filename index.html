@@ -30,11 +30,10 @@
 
     -->
 <style>
-  
   @font-face {
-      font-family: "Hacked";
-      src: url(https://hackedfont.com/HACKED.ttf);
-    }
+    font-family: "Hacked";
+    src: url(https://hackedfont.com/HACKED.ttf);
+  }
 
   * {
     font-family: Hacked;
@@ -97,8 +96,6 @@
       margin: 0.4em auto;
     }
   }
-
-  
 </style>
 
 <head></head>
@@ -107,8 +104,11 @@
   <div id="settings" class="row">
     <p>Score:</p>
     <div class="quantity">
-      <input type="number" min="1" max="9" step="1" value="1">
-      <input type="number" min="1" max="9" step="1" value="1">
+      <input disabled name="answerQuantity" id="answerQuantity"
+      type="number" min="1" max="9" step="1" value="1">
+      <select disabled name="difficulty" id="difficulty">
+        <option value="easy">easy</option>
+      </select>
     </div>
   </div>
   <div id="question" class="row">
@@ -277,6 +277,8 @@
 
       //General Variables
       let state = {
+        amount : 10,
+        difficulty : "easy",
         answers: [],
         score: 0,
         maxScore: questions.length
@@ -286,12 +288,12 @@
       //Components Logic
 
       const answerNext = () => {
-        if ( state.answers.length === questions.length) return null
+        if (state.answers.length === questions.length) return null
         $('#settings>p').innerText = "Score: " + state.score
         let nQ = state.answers.length + 1
         loadQuestion(nQ)
         answerInputActivation(nQ)
-        
+
       }
 
       const loadQuestion = (qstN) => {
@@ -345,7 +347,7 @@
                   (e) => {
                     e.target.classList.add('correct-answer')
                     state.answers.push(answerArray[i])
-                    state.score = state.score +1 
+                    state.score = state.score + 1
                     setTimeout(() => answerInputActivation(false), 1000)
                     setTimeout(() => answerNext(), 2000)
 
@@ -356,7 +358,7 @@
                   (e) => {
                     e.target.classList.add('incorrect-answer')
                     state.answers.push(answerArray[i])
-                    state.score = state.score 
+                    state.score = state.score
                     setTimeout(() => answerInputActivation(false), 1000)
                     setTimeout(() => answerNext(), 2000)
                   })
@@ -374,7 +376,22 @@
             })
         }
       }
+      const getParameters = function (){
 
+      }
+
+      const loadDoc = function() {
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo").innerHTML = this.responseText;
+          }
+        };
+        xhttp.open("GET", `https://opentdb.com/api.php?amount=${state.amount}&category=18&difficulty=${state.difficulty}` , true);
+        xhttp.send();
+      }
+      
       //MAIN
       answerNext()
     };
